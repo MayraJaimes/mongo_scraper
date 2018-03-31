@@ -6,9 +6,7 @@ const bodyParser = require("body-parser");
 const exphbs  = require('express-handlebars');
 
 var app = express();
-
 var port = process.env.PORT || 3000;
-
 
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
@@ -27,19 +25,9 @@ db.on("error", function(error) {
   console.log("Database Error:", error);
 });
 
-app.get('/', function (req, res) {
-  res.render('home');
+app.get("/", function(req, res) {
+  res.render("home");
 });
-
-app.get('/saved', function (req, res) {
-  res.render('saved');
-});
-
-app.get('/comment', function (req, res) {
-  res.render('comment');
-});
-
-
 
 app.get("/all", function(req, res) {
   db.scrapedData.find({}, function(error, docs) {
@@ -52,7 +40,29 @@ app.get("/all", function(req, res) {
   });
 });
 
-app.get("/scrape", function(req, res) {
+app.get("/saved", function(req, res) {
+  db.scrapedData.find({}, function(error, docs) {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      res.json(docs);
+    }
+  });
+});
+
+
+app.get('/comment', function (req, res) {
+  res.render('comment');
+});
+
+app.post('/comment', function (req, res) {
+  var username = req.body.username;
+  var comment = req.body.comment;
+  res.redirect("home")
+});
+
+app.post("/articles", function(req, res) {
   var link = "https://www.sciencedaily.com/news/top/health/";
   request(link, function(error, response, html) {
     var $ = cheerio.load(html);
@@ -75,9 +85,11 @@ app.get("/scrape", function(req, res) {
           }
         });
       }
-    });
+    })
+    .then(function (articles) {
+      res.json(articles);
+    });  
   });
-  res.send("Scraped");
 });
 
 app.get("/clearall", function(req, res) {
