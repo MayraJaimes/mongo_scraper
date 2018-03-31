@@ -3,15 +3,18 @@ const mongojs = require("mongojs");
 const request = require("request");
 const cheerio = require("cheerio");
 const bodyParser = require("body-parser");
-
+const exphbs  = require('express-handlebars');
 
 var app = express();
 
-app.use(
-  bodyParser.urlencoded({
-    extended: false
-  })
-);
+var port = process.env.PORT || 3000;
+
+
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 app.use(express.static("public"));
 
@@ -24,9 +27,19 @@ db.on("error", function(error) {
   console.log("Database Error:", error);
 });
 
-app.get("/", function(req, res) {
-  res.send(index.html);
+app.get('/', function (req, res) {
+  res.render('home');
 });
+
+app.get('/saved', function (req, res) {
+  res.render('saved');
+});
+
+app.get('/comment', function (req, res) {
+  res.render('comment');
+});
+
+
 
 app.get("/all", function(req, res) {
   db.scrapedData.find({}, function(error, docs) {
