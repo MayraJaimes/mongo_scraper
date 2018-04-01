@@ -1,0 +1,16 @@
+
+<h1 class="header">Saved Health Articles</h1>
+
+<div id="button">
+  <a href="/"><button type="button" class="btn btn-warning" id="scrape-articles">See All Articles</button></a>
+</div>
+
+<div id="articles">
+  {{#each saved}}
+    <div class='data-entry'> 
+      <a href='{{this.link}}'> <h4>{{this.title}}</h4> </a>  
+      <p> {{this.summary}}</p>
+      <button type="button" data-id="{{this._id}}" class="btn btn-primary unsave-article"> Delete Saved Article </button> 
+    </div>
+  {{/each}}
+</div>

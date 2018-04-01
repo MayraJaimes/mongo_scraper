@@ -1,0 +1,20 @@
+
+<h1 class="header">Latest Health Articles</h1>
+
+<div class="scrape-button">
+  <a href="/"><button type="button" class="btn btn-warning" id="scrape-articles">Scrape New Articles!</button></a>
+</div>
+
+<div id="saved-button">
+  <a href="/saved"><button type="button" class="btn btn-warning" id="saved-articles">See Saved Articles!</button></a>
+</div>
+
+<div id="articles">
+  {{#each articles}}
+    <div class='data-entry'> 
+      <a href='{{this.link}}'> <h4>{{this.title}}</h4> </a>  
+      <p> {{this.summary}}</p>
+      <button type="button" data-id="{{this._id}}" class="btn btn-primary save-article"> Save </button> 
+    </div>
+  {{/each}}
+</div>

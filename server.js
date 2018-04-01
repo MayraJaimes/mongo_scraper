@@ -1,11 +1,13 @@
-const express = require("express"),
-      mongojs = require("mongojs"),
-      request = require("request"),
-      cheerio = require("cheerio"),
-      bodyParser = require("body-parser"),
-      exphbs  = require('express-handlebars'),
-      mongoose = require('mongoose'),
-      app = express();
+const express     = require("express"),
+      mongojs     = require("mongojs"),
+      request     = require("request"),
+      cheerio     = require("cheerio"),
+      bodyParser  = require("body-parser"),
+      exphbs      = require('express-handlebars'),
+      mongoose    = require('mongoose'),
+      app         = express();
+      
+mongoose.connect("mongodb://localhost/mongoScraper");
 
 var port = process.env.PORT || 3000;
 
@@ -16,85 +18,104 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost/mongoScraper");
-
 var scraperSchema = new mongoose.Schema({
   title: String,
   summary: String,
   link: String,
   comment: String,
-  saved: Boolean
+  saved: {
+    type: Boolean,
+    default: false
+  }
 });
 
 var Scraper = mongoose.model("Scraper", scraperSchema);
 
-app.get("/", function(req, res) {
-  res.render("home");
-});
 
-app.get("/all", function(req, res) {
-  Scraper.find({}, function(error, docs) {
-    if (error) {
-      console.log(error);
+app.get("/", function(req, res) {
+  Scraper.find({saved: false}, function(err, articles) {
+    if (err) {
+      console.log(err);
     }
     else {
-      res.json(docs);
+      res.render("index", {articles: articles});
     }
   });
 });
 
-// app.get("/saved", function(req, res) {
-//   db.scrapedData.find({}, function(error, docs) {
-//     if (error) {
-//       console.log(error);
-//     }
-//     else {
-//       res.json(docs);
-//     }
-//   });
-// });
+app.put("/api/saved", function(req, res) {
+  var id = req.body.id;
+  var updateObj = {saved: true};
 
-// app.get('/comment', function (req, res) {
-//   res.render('comment');
-// });
+  Scraper.findByIdAndUpdate(id, updateObj, function(err, updatedArticle){
+    if(err){
+      console.log(err);
+    } else {
+      res.render("index");
+      console.log(updatedArticle);
+    }
+  })
+});
 
-// app.post('/comment', function (req, res) {
-//   var username = req.body.username;
-//   var comment = req.body.comment;
-//   res.redirect("home")
-// });
+app.put("/api/unsave", function(req, res) {
+  var id = req.body.id;
+  var updateObj = {saved: false};
 
+  Scraper.findByIdAndUpdate(id, updateObj, function(err, articles){
+    if(err){
+      console.log(err);
+    } else {
+      res.render("saved");
+    }
+  })
+});
+
+app.get("/saved", function(req, res) {
+  Scraper.find({saved: true}, function(err, saved) {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      res.render("saved", {saved: saved});
+    }
+  });
+});
+  
 app.get("/scrape", function(req, res) {
   var link = "https://www.sciencedaily.com/news/top/health/";
   request(link, function(error, response, html) {
     var $ = cheerio.load(html);
     $(".latest-head").each(function(i, element) {
 
-      var title = $(element).children("a").text();
+      var article = $(element).children("a").text();
       var link = $(element).children("a").attr("href");
       var summary = $(element).next().text();
 
-      if (title && link && summary) {
-       var article = new Scraper({
-         title: title,
-         link: link,
-         summary: summary
-       });
-
-        article.save(function(err, scrapedArticle){
-          if (err){
-            console.log("Error message");
-            console.log(err);
+      if (article && link && summary) {
+        Scraper.find({title: article}, 
+          function(err, docs) {
+            console.log(docs.length);
+          if (docs.length === 0) {
+            Scraper.create({
+              title: article,
+              link: link,
+              summary: summary
+            }, function(err, docs) {
+              if (err){
+                console.log(err);
+              } else {
+                console.log("inserted");
+              }
+            });
           } else {
-            console.log("Article saved");
-            console.log(scrapedArticle);
+            console.log("already exists");
           }
-        });
-      }
-    });  
+        }
+      )} 
+    });
   });
-  res.send("Scrape Complete");
 });
+
 
 app.listen(3000, function() {
   console.log("App running on port 3000!");
