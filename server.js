@@ -1,11 +1,12 @@
-const express = require("express");
-const mongojs = require("mongojs");
-const request = require("request");
-const cheerio = require("cheerio");
-const bodyParser = require("body-parser");
-const exphbs  = require('express-handlebars');
+const express = require("express"),
+      mongojs = require("mongojs"),
+      request = require("request"),
+      cheerio = require("cheerio"),
+      bodyParser = require("body-parser"),
+      exphbs  = require('express-handlebars'),
+      mongoose = require('mongoose'),
+      app = express();
 
-var app = express();
 var port = process.env.PORT || 3000;
 
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
@@ -13,24 +14,26 @@ app.set('view engine', 'handlebars');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-
 app.use(express.static("public"));
 
-var databaseUrl = "scraper";
-var collections = ["scrapedData"];
+mongoose.connect("mongodb://localhost/mongoScraper");
 
-var db = mongojs(databaseUrl, collections);
-
-db.on("error", function(error) {
-  console.log("Database Error:", error);
+var scraperSchema = new mongoose.Schema({
+  title: String,
+  summary: String,
+  link: String,
+  comment: String,
+  saved: Boolean
 });
+
+var Scraper = mongoose.model("Scraper", scraperSchema);
 
 app.get("/", function(req, res) {
   res.render("home");
 });
 
 app.get("/all", function(req, res) {
-  db.scrapedData.find({}, function(error, docs) {
+  Scraper.find({}, function(error, docs) {
     if (error) {
       console.log(error);
     }
@@ -40,29 +43,28 @@ app.get("/all", function(req, res) {
   });
 });
 
-app.get("/saved", function(req, res) {
-  db.scrapedData.find({}, function(error, docs) {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      res.json(docs);
-    }
-  });
-});
+// app.get("/saved", function(req, res) {
+//   db.scrapedData.find({}, function(error, docs) {
+//     if (error) {
+//       console.log(error);
+//     }
+//     else {
+//       res.json(docs);
+//     }
+//   });
+// });
 
+// app.get('/comment', function (req, res) {
+//   res.render('comment');
+// });
 
-app.get('/comment', function (req, res) {
-  res.render('comment');
-});
+// app.post('/comment', function (req, res) {
+//   var username = req.body.username;
+//   var comment = req.body.comment;
+//   res.redirect("home")
+// });
 
-app.post('/comment', function (req, res) {
-  var username = req.body.username;
-  var comment = req.body.comment;
-  res.redirect("home")
-});
-
-app.post("/articles", function(req, res) {
+app.get("/scrape", function(req, res) {
   var link = "https://www.sciencedaily.com/news/top/health/";
   request(link, function(error, response, html) {
     var $ = cheerio.load(html);
@@ -70,39 +72,28 @@ app.post("/articles", function(req, res) {
 
       var title = $(element).children("a").text();
       var link = $(element).children("a").attr("href");
+      var summary = $(element).next().text();
 
-      if (title && link) {
-        db.scrapedData.insert({
-          title: title,
-          link: link
-        },
-        function(err, inserted) {
-          if (err) {
+      if (title && link && summary) {
+       var article = new Scraper({
+         title: title,
+         link: link,
+         summary: summary
+       });
+
+        article.save(function(err, scrapedArticle){
+          if (err){
+            console.log("Error message");
             console.log(err);
-          }
-          else {
-            console.log(inserted);
+          } else {
+            console.log("Article saved");
+            console.log(scrapedArticle);
           }
         });
       }
-    })
-    .then(function (articles) {
-      res.json(articles);
     });  
   });
-});
-
-app.get("/clearall", function(req, res) {
-  db.scrapedData.remove({}, function(error, response) {
-    if (error) {
-      console.log(error);
-      res.send(error);
-    }
-    else {
-      console.log(response);
-      res.send(response);
-    }
-  });
+  res.send("Scrape Complete");
 });
 
 app.listen(3000, function() {
