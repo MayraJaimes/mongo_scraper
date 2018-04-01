@@ -1,3 +1,5 @@
+
+
 $(".save-article").on("click", function (event) {
   event.preventDefault();
 
@@ -9,7 +11,11 @@ $(".save-article").on("click", function (event) {
   $.ajax("/api/saved", {
     type: "PUT",
     data: information
-  })
+  }).then(
+    function () {
+      window.location.href = "/";
+    }
+  );
 });
 
 $(".unsave-article").on("click", function (event) {

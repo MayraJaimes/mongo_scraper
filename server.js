@@ -33,11 +33,13 @@ var Scraper = mongoose.model("Scraper", scraperSchema);
 
 
 app.get("/", function(req, res) {
+  console.log('on index')
   Scraper.find({saved: false}, function(err, articles) {
     if (err) {
       console.log(err);
     }
     else {
+      console.log('rendering index', articles);
       res.render("index", {articles: articles});
     }
   });
@@ -81,12 +83,12 @@ app.get("/saved", function(req, res) {
   });
 });
   
-app.get("/scrape", function(req, res) {
+app.get("/scrape", function(req, res) {  
   var link = "https://www.sciencedaily.com/news/top/health/";
   request(link, function(error, response, html) {
     var $ = cheerio.load(html);
     $(".latest-head").each(function(i, element) {
-
+      console.log('scraping latest news');
       var article = $(element).children("a").text();
       var link = $(element).children("a").attr("href");
       var summary = $(element).next().text();
@@ -94,26 +96,27 @@ app.get("/scrape", function(req, res) {
       if (article && link && summary) {
         Scraper.find({title: article}, 
           function(err, docs) {
-            console.log(docs.length);
-          if (docs.length === 0) {
-            Scraper.create({
-              title: article,
-              link: link,
-              summary: summary
-            }, function(err, docs) {
-              if (err){
-                console.log(err);
-              } else {
-                console.log("inserted");
-              }
-            });
+            if (docs.length === 0) {
+              Scraper.create({
+                title: article,
+                link: link,
+                summary: summary
+              }, 
+          function(err, docs) {
+            if (err){
+              console.log(err);
+            } else {
+              console.log("inserted");
+            }
+          });
           } else {
             console.log("already exists");
           }
         }
       )} 
     });
-  });
+    
+  })
 });
 
 
