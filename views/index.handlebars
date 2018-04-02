@@ -1,23 +1,42 @@
+<nav class="navbar navbar-default navbar-static-top">
+  <div class="container">
+      <a class="navbar-brand" href="/"> Mongo Scraper </a>
+      <a class="navbar-text" href="/"> Home </a>
+      <a class="navbar-text" id="saved-articles" href="/saved"> Saved Articles </a>
+      <a href="/scrape"><button type="button" class="btn btn-default navbar-btn" id="scrape-articles">Scrape New Articles!</button></a>
+  </div>
+</nav>
 
-<h1 class="header">Latest Health Articles</h1>
-
-<div class="scrape-button">
-  <a href="/scrape"><button type="button" class="btn btn-warning" id="scrape-articles">Scrape New Articles!</button></a>
-</div>
-
-<div id="saved-button">
-  <a href="/saved"><button type="button" class="btn btn-warning" id="saved-articles">See Saved Articles!</button></a>
+<div class="jumbotron">
+  <h1 class="header">Mongo Scraper</h1>
+  <p>Science Daily Edition</p>
 </div>
 
 <div id="articles">
+  <div class="row">
   {{#each articles}}
-    <div class='data-entry'> 
-      <a href='{{this.link}}'> <h4>{{this.title}}</h4> </a>  
-      <p> {{this.summary}}</p>
-      <button type="button" data-id="{{this._id}}" class="btn btn-primary save-article"> Save </button>
-      <button type="button" data-id="{{this._id}}" class="btn btn-primary comment-article"> Add/View Comments </button>  
-    </div>
+      <div class="col-md-12 data-entry">
+        <div class="thumbnail">
+          <div class="row">
+            <div class="col-md-10 data-entry">
+              <div class="caption">
+                <a href='{{this.link}}'> <h3>{{this.title}}</h3> </a>
+                <p> {{this.summary}}</p>
+              </div>
+              <p data-id="{{this._id}}" class="comment-article"> Comments 
+                <i class="fas fa-comments"></i>
+              </p>
+            </div>
+            <div class="col-md-2">
+              <p data-id="{{this._id}}" class="save-article"> Save   
+                <i class="fas fa-plus"></i> 
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
   {{/each}}
+  </div>
 </div>
 
  <div id="comments" role="dialog" style="display:none" class="none">
@@ -52,6 +71,11 @@
       <p>There are no comments for this article yet.</p>
     {{/each}}
 </ul>
+
+
+
+
+
 
 
 
