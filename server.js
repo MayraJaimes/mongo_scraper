@@ -29,20 +29,24 @@ var scraperSchema = new mongoose.Schema({
   }
 });
 
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array)
+  }
+}
+
 var Scraper = mongoose.model("Scraper", scraperSchema);
 
-
 app.get("/", function(req, res) {
-  console.log('on index')
-  Scraper.find({saved: false}, function(err, articles) {
-    if (err) {
-      console.log(err);
-    }
-    else {
-      console.log('rendering index', articles);
-      res.render("index", {articles: articles});
-    }
-  });
+  console.log('on index');
+  Scraper.find({saved: false})
+    .then((articles) => {
+      console.log('articles', articles);
+      res.render("index", {articles: articles});  
+    })
+    .catch(err => {
+      console.log('Couldn\'t find any articles', err);
+    });
 });
 
 app.put("/api/saved", function(req, res) {
@@ -54,7 +58,6 @@ app.put("/api/saved", function(req, res) {
       console.log(err);
     } else {
       res.render("index");
-      console.log(updatedArticle);
     }
   })
 });
@@ -82,43 +85,33 @@ app.get("/saved", function(req, res) {
     }
   });
 });
-  
-app.get("/scrape", function(req, res) {  
-  var link = "https://www.sciencedaily.com/news/top/health/";
-  request(link, function(error, response, html) {
-    var $ = cheerio.load(html);
-    $(".latest-head").each(function(i, element) {
-      console.log('scraping latest news');
-      var article = $(element).children("a").text();
-      var link = $(element).children("a").attr("href");
-      var summary = $(element).next().text();
 
-      if (article && link && summary) {
-        Scraper.find({title: article}, 
-          function(err, docs) {
-            if (docs.length === 0) {
-              Scraper.create({
-                title: article,
-                link: link,
-                summary: summary
-              }, 
-          function(err, docs) {
-            if (err){
-              console.log(err);
-            } else {
-              console.log("inserted");
-            }
-          });
-          } else {
-            console.log("already exists");
+app.get("/scrape", function(req, res) {  
+  request("https://www.sciencedaily.com/news/top/health/", function(error, response, html) {
+    var $ = cheerio.load(html);
+    const startScraping = async () => {
+      await asyncForEach($(".latest-head"), async (element) => {
+        var article = $(element).children("a").text();
+        var link = $(element).children("a").attr("href");
+        var summary = $(element).next().text();
+        if (article && link && summary) {
+          let articles = await Scraper.find({title: article})
+          let newArticle; 
+          if (articles.length === 0) {
+            newArticle = await Scraper.create({
+              title: article,
+              link: link,
+              saved: false,
+              summary: summary
+            });
           }
         }
-      )} 
-    });
-    
+      });
+      res.redirect('/')
+    };
+    startScraping();
   })
 });
-
 
 app.listen(3000, function() {
   console.log("App running on port 3000!");
