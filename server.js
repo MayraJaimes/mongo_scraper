@@ -38,10 +38,8 @@ async function asyncForEach(array, callback) {
 var Scraper = mongoose.model("Scraper", scraperSchema);
 
 app.get("/", function(req, res) {
-  console.log('on index');
   Scraper.find({saved: false})
     .then((articles) => {
-      console.log('articles', articles);
       res.render("index", {articles: articles});  
     })
     .catch(err => {
@@ -73,6 +71,19 @@ app.put("/api/unsave", function(req, res) {
       res.render("saved");
     }
   })
+});
+
+
+
+app.post("/api/guests", function (req, res) {
+  db.guests.create({
+      guest_name: req.body.guest_name,
+      contact: req.body.contact,
+      eventId: req.body.eventId
+  })
+  .then(function (dbguests) {
+      res.json(dbguests);
+  });
 });
 
 app.get("/saved", function(req, res) {
@@ -112,6 +123,36 @@ app.get("/scrape", function(req, res) {
     startScraping();
   })
 });
+
+
+app.put("/api/unsave/comments", function(req, res) {
+  var id = req.body.id;
+
+  Scraper.findByIdAndUpdate(id, { $push: {comment: req.body.comment}}, function(err, articles){
+    if(err){
+      console.log(err);
+    } else {
+      console.log(articles);
+      res.render("index");
+    }
+  })
+});
+
+app.get("/api/unsave_comments", function(req, res) {
+  var id = req.body.id;
+  Scraper.findById(id)
+    .then((comments) => {
+      console.log('index page here')
+      res.render("index", {comments: comments});
+      console.log("comments", comments);
+    })
+    .catch(err => {
+      console.log('Couldn\'t find any articles', err);
+    });
+});
+
+
+
 
 app.listen(3000, function() {
   console.log("App running on port 3000!");

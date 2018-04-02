@@ -34,6 +34,59 @@ $(".unsave-article").on("click", function (event) {
   );
 });
 
+$(".comment-article").on("click", function (event) {
+  var id = $(this).data("id");
+  console.log("id", id);
+
+  var information = {
+    id: id
+  }; 
+
+  event.preventDefault();
+
+  $.ajax("/api/unsave_comments", {
+    type: "GET",
+    data: information
+  }).then(
+    function () {
+      console.log("add comment");
+      
+    })
+  });
+
+$("#comments").on("submit", function (event) {
+  event.preventDefault();
+
+  var id = $(this).data("id");
+  console.log(id);
+  var comment = $("#comment").val().trim();
+
+  var newComment = {
+    id: id,
+    comment: comment
+  };
+
+  console.log(newComment);
+
+  $("#comment").val('');   
+  $(".close-item").html("");
+  $('#comments').css('display', 'none');
+  $('#comments').removeClass('block');
+  $('#comments').addClass('none'); 
+
+  $.ajax("/api/unsave/comments", {
+    type: "PUT",
+    data: newComment
+  }).then(
+    function (article) {  
+     
+      console.log("first", article);
+      window.location.href = "/";
+    }
+  );
+});
+
+
 
 $('.comment-article').on('click', function () {
   if ($('#comments').hasClass('none')) {
