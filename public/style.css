@@ -1,0 +1,51 @@
+#comments {
+  z-index: 1010;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal-content {
+  padding: 20px;
+  align-content: center;
+}
+
+.close-item {
+  float: right;
+}
+
+
+h3 {
+  margin-top: 0px;
+}
+
+label {
+  width: 100%;
+  margin: auto;
+  text-align: center;
+}
+
+.submit-button {
+  display: block;
+}
+
+.text-area {
+  width: 100%;
+  border: none;
+}
+
+textarea {
+  outline: none;
+  resize: none;
+}
+
+form {
+  width: 95%;
+  margin: 0 auto;
+}
+
+hr {
+  width: 100%;
+  border-top: 1px solid #bebcbce7;
+}

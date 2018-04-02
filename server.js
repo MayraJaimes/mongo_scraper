@@ -93,7 +93,7 @@ app.get("/scrape", function(req, res) {
       await asyncForEach($(".latest-head"), async (element) => {
         var article = $(element).children("a").text();
         var link = "https://www.sciencedaily.com" + $(element).children("a").attr("href");
-        var summary = $(element).next().text();
+        var summary = $(element).next().clone().children().remove().end().text();
         if (article && link && summary) {
           let articles = await Scraper.find({title: article})
           let newArticle; 
