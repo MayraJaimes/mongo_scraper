@@ -28,9 +28,15 @@
               </p>
             </div>
             <div class="col-md-2">
-              <p data-id="{{this._id}}" class="save-article"> Save   
-                <i class="fas fa-plus"></i> 
-              </p>
+              {{#if saved}}
+                <p data-id="{{this._id}}" class="unsave-article"> Delete   
+                  <i class="fas fa-plus"></i> 
+                </p>
+              {{else}}
+                <p data-id="{{this._id}}" class="save-article"> Save   
+                  <i class="fas fa-plus"></i> 
+                </p>
+              {{/if}}
             </div>
           </div>
         </div>
@@ -52,19 +58,16 @@
             <h3>Existing Comments </h3>
           </label>
 
-
-      {{#if comments}}
-        <li class="article-comments-list">
-            {{this.comments}}
-            <a href="/events/{{this.id}}">
-                <p class="delete-comment">  <i class='fas fa-times'></i> </p>
-            </a>
-        </li>
-
-      {{else}}
-        <p>There are no comments for this article yet.</p>
-      {{/if}}
-
+          {{#if comment}}
+            <li class="article-comments-list">
+                {{this.comment}}
+                <a href="/events/{{this.id}}">
+                    <p class="delete-comment">  <i class='fas fa-times'></i> </p>
+                </a>
+            </li>
+          {{else}}
+            <p>There are no comments for this article yet.</p>
+          {{/if}}
 
           <textarea placeholder="New Comment" class="text-area" id="comment" rows="3"></textarea>
             <hr>
@@ -75,13 +78,6 @@
 </div>
 {{/each}}
 
-
-
- <ul class="article-comments-list">
-    {{#each articles}}
-      
-    {{/each}}
-</ul>
 
 
 

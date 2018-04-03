@@ -73,8 +73,6 @@ app.put("/api/unsave", function(req, res) {
   })
 });
 
-
-
 app.post("/api/guests", function (req, res) {
   db.guests.create({
       guest_name: req.body.guest_name,
@@ -87,12 +85,12 @@ app.post("/api/guests", function (req, res) {
 });
 
 app.get("/saved", function(req, res) {
-  Scraper.find({saved: true}, function(err, saved) {
+  Scraper.find({saved: true}, function(err, articles) {
     if (err) {
       console.log(err);
     }
     else {
-      res.render("saved", {saved: saved});
+      res.render("index", {articles: articles});
     }
   });
 });
@@ -124,6 +122,18 @@ app.get("/scrape", function(req, res) {
   })
 });
 
+app.get("/api/comments", function(req, res) {
+  var id = req.body.id;
+
+  Scraper.findById(id, function(err, articles){
+    if(err){
+      console.log(err);
+    } else {
+      console.log(articles);
+      res.render("index", articles);
+    }
+  })
+});
 
 app.put("/api/unsave/comments", function(req, res) {
   var id = req.body.id;
@@ -134,21 +144,9 @@ app.put("/api/unsave/comments", function(req, res) {
       console.log(err);
     } else {
       console.log(articles);
-      res.render("index");
+      res.render("index", articles);
     }
   })
-});
-
-app.post("/api/unsave_comments", function(req, res) {
-  var id = req.body.id;
-  Scraper.findById(id)
-    .then((comments) => {
-      console.log('index page here')
-      res.render("index", {comments: comments});
-    })
-    .catch(err => {
-      console.log('Couldn\'t find any articles', err);
-    });
 });
 
 app.listen(3000, function() {

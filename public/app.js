@@ -44,7 +44,7 @@ $(".comment-article").on("click", function (event) {
 
   event.preventDefault();
 
-  $.ajax("/api/unsave_comments", {
+  $.ajax("/api/comments", {
     type: "GET",
     data: information
   }).then(
