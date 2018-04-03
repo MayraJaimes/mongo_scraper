@@ -45,39 +45,12 @@
   </div>
 </div>
   
-{{#each articles}}
- <div id="comments" role="dialog" data-id="{{this._id}}" style="display:none" class="none">
-  <div class="modal-dialog">
-    <div class="modal-content">      
-      <div class="close-item"> </div>
-      <form class="form-comment" data-id="{{this._id}}" name="add-comment">
-          <label for="item_name">
-            <h3>Comments for Article: {{this.title}} </h3>
-            <hr>
 
-            <h3>Existing Comments </h3>
-          </label>
+  <div id="modal" style="display:none">
 
-          {{#if comment}}
-            <li class="article-comments-list">
-                {{this.comment}}
-                <a href="/events/{{this.id}}">
-                    <p class="delete-comment">  <i class='fas fa-times'></i> </p>
-                </a>
-            </li>
-          {{else}}
-            <p>There are no comments for this article yet.</p>
-          {{/if}}
-          <textarea placeholder="Your Name" class="text-area" required="" id="name" rows="1"></textarea>
-            <hr>
-          <textarea placeholder="New Comment" class="text-area" id="body" rows="2"></textarea>
-            <hr>
-          <button class="btn btn-primary submit-button" type="submit">Submit</button>
-      </form>
-    </div>
   </div>
-</div>
-{{/each}}
+
+
 
 
 

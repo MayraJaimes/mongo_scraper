@@ -102,25 +102,42 @@ app.get("/scrape", function(req, res) {
   })
 });
 
-app.get("/article/comments", function(req, res) {
-  db.Article.findOne({ _id: req.body.id })
+app.get("/article/:id", function(req, res) {
+  var id = req.params.id;
+  console.log("id on server side", id)
+  db.Article.findOne({_id: req.params.id})
     .populate("note")
-    .then(function(dbArticle) {
-      res.json(dbArticle);
-      // res.render("index", dbArticle);
+    .then(function(article) {
+      console.log(article.title);
+      res.json(article);
     })
     .catch(function(err) {
       res.json(err);
     });
 });
 
-app.post("/api/unsave/comments", function(req, res) {
-  db.Note.create({note: req.body})
+
+// +app.get("/api/comments", function(req, res) {
+//   +  var id = req.body.id;
+//   +
+//   +  Scraper.findById(id, function(err, articles){
+//   +    if(err){
+//   +      console.log(err);
+//   +    } else {
+//   +      console.log(articles);
+//   +      res.render("index", articles);
+//   +    }
+//   +  })
+//   +});
+
+
+app.post("/article/add/:id", function(req, res) {
+  db.Note.create(req.body)
   .then(function(dbNote) {
-    return db.Article.findOneAndUpdate({ _id: req.body.id }, { $push: {note: dbNote._id} }, { new: true });
+    console.log("note", dbNote);
+    return db.Article.findOneAndUpdate({ _id: req.params.id }, {note: dbNote._id}, { new: true });
   })
   .then(function(dbArticle) {
-    // res.render("index", articles);
     res.json(dbArticle);
   })
   .catch(function(err) {
