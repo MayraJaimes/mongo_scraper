@@ -22,7 +22,7 @@ var scraperSchema = new mongoose.Schema({
   title: String,
   summary: String,
   link: String,
-  comment: String,
+  comment: [],
   saved: {
     type: Boolean,
     default: false
@@ -127,8 +127,9 @@ app.get("/scrape", function(req, res) {
 
 app.put("/api/unsave/comments", function(req, res) {
   var id = req.body.id;
+  var updateObj = {comment: req.body.comment};
 
-  Scraper.findByIdAndUpdate(id, { $push: {comment: req.body.comment}}, function(err, articles){
+  Scraper.findByIdAndUpdate(id, {$push: {comment: req.body.comment} }, {new : true}, function(err, articles){
     if(err){
       console.log(err);
     } else {
@@ -138,21 +139,17 @@ app.put("/api/unsave/comments", function(req, res) {
   })
 });
 
-app.get("/api/unsave_comments", function(req, res) {
+app.post("/api/unsave_comments", function(req, res) {
   var id = req.body.id;
   Scraper.findById(id)
     .then((comments) => {
       console.log('index page here')
       res.render("index", {comments: comments});
-      console.log("comments", comments);
     })
     .catch(err => {
       console.log('Couldn\'t find any articles', err);
     });
 });
-
-
-
 
 app.listen(3000, function() {
   console.log("App running on port 3000!");
