@@ -3,47 +3,47 @@ const express     = require("express"),
       request     = require("request"),
       cheerio     = require("cheerio"),
       bodyParser  = require("body-parser"),
+      mongoose    = require("mongoose"),
       exphbs      = require('express-handlebars'),
-      mongoose    = require('mongoose'),
       app         = express();
-      
-mongoose.connect("mongodb://localhost/mongoScraper");
 
 var port = process.env.PORT || 3000;
 
+var db = require("./models");
+
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
-
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 app.use(express.static("public"));
 
-var scraperSchema = new mongoose.Schema({
-  title: String,
-  summary: String,
-  link: String,
-  comment: [],
-  saved: {
-    type: Boolean,
-    default: false
-  }
-});
+mongoose.connect("mongodb://localhost/articleScraper");
+
+//ROUTES
 
 async function asyncForEach(array, callback) {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array)
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array)
+    }
   }
-}
-
-var Scraper = mongoose.model("Scraper", scraperSchema);
 
 app.get("/", function(req, res) {
-  Scraper.find({saved: false})
-    .then((articles) => {
-      res.render("index", {articles: articles});  
+  db.Article.find({saved: false})
+    .then(function(articles) {
+      res.render("index", {articles});  
     })
-    .catch(err => {
-      console.log('Couldn\'t find any articles', err);
+    .catch(function(err) {
+      res.json(err);
+    });
+});
+
+app.get("/saved", function(req, res) {
+  db.Article.find({saved: true})
+    .then(function(articles) {
+      res.render("saved", {articles});  
+    })
+    .catch(function(err) {
+      res.json(err);
     });
 });
 
@@ -51,47 +51,27 @@ app.put("/api/saved", function(req, res) {
   var id = req.body.id;
   var updateObj = {saved: true};
 
-  Scraper.findByIdAndUpdate(id, updateObj, function(err, updatedArticle){
-    if(err){
-      console.log(err);
-    } else {
-      res.render("index");
-    }
+  db.Article.findByIdAndUpdate(id, updateObj)
+  .then(function(dbArticle) {
+    // res.render("saved");
+    res.json(dbArticle);
   })
+  .catch(function(err) {
+    res.json(err);
+  });
 });
-
-app.put("/api/unsave", function(req, res) {
+  
+app.put("/api/unsaved", function(req, res) {
   var id = req.body.id;
   var updateObj = {saved: false};
 
-  Scraper.findByIdAndUpdate(id, updateObj, function(err, articles){
-    if(err){
-      console.log(err);
-    } else {
-      res.render("saved");
-    }
+  db.Article.findByIdAndUpdate(id, updateObj)
+  .then(function(dbArticle) {
+    // res.render("saved");
+    res.json(dbArticle);
   })
-});
-
-app.post("/api/guests", function (req, res) {
-  db.guests.create({
-      guest_name: req.body.guest_name,
-      contact: req.body.contact,
-      eventId: req.body.eventId
-  })
-  .then(function (dbguests) {
-      res.json(dbguests);
-  });
-});
-
-app.get("/saved", function(req, res) {
-  Scraper.find({saved: true}, function(err, articles) {
-    if (err) {
-      console.log(err);
-    }
-    else {
-      res.render("index", {articles: articles});
-    }
+  .catch(function(err) {
+    res.json(err);
   });
 });
 
@@ -104,10 +84,10 @@ app.get("/scrape", function(req, res) {
         var link = "https://www.sciencedaily.com" + $(element).children("a").attr("href");
         var summary = $(element).next().clone().children().remove().end().text();
         if (article && link && summary) {
-          let articles = await Scraper.find({title: article})
+          let articles = await db.Article.find({title: article})
           let newArticle; 
           if (articles.length === 0) {
-            newArticle = await Scraper.create({
+            newArticle = await db.Article.create({
               title: article,
               link: link,
               saved: false,
@@ -122,32 +102,32 @@ app.get("/scrape", function(req, res) {
   })
 });
 
-app.get("/api/comments", function(req, res) {
-  var id = req.body.id;
-
-  Scraper.findById(id, function(err, articles){
-    if(err){
-      console.log(err);
-    } else {
-      console.log(articles);
-      res.render("index", articles);
-    }
-  })
+app.get("/article/comments", function(req, res) {
+  db.Article.findOne({ _id: req.body.id })
+    .populate("note")
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+      // res.render("index", dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
 });
 
-app.put("/api/unsave/comments", function(req, res) {
-  var id = req.body.id;
-  var updateObj = {comment: req.body.comment};
-
-  Scraper.findByIdAndUpdate(id, {$push: {comment: req.body.comment} }, {new : true}, function(err, articles){
-    if(err){
-      console.log(err);
-    } else {
-      console.log(articles);
-      res.render("index", articles);
-    }
+app.post("/api/unsave/comments", function(req, res) {
+  db.Note.create({note: req.body})
+  .then(function(dbNote) {
+    return db.Article.findOneAndUpdate({ _id: req.body.id }, { $push: {note: dbNote._id} }, { new: true });
   })
+  .then(function(dbArticle) {
+    // res.render("index", articles);
+    res.json(dbArticle);
+  })
+  .catch(function(err) {
+    res.json(err);
+  });
 });
+
 
 app.listen(3000, function() {
   console.log("App running on port 3000!");

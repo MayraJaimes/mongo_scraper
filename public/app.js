@@ -1,10 +1,6 @@
 $(".save-article").on("click", function (event) {
   event.preventDefault();
-
-  var id = $(this).data("id");
-  var information = {
-    id: id,
-  };
+  var information = {id: $(this).data("id")}; 
 
   $.ajax("/api/saved", {
     type: "PUT",
@@ -18,13 +14,9 @@ $(".save-article").on("click", function (event) {
 
 $(".unsave-article").on("click", function (event) {
   event.preventDefault();
+  var information = {id: $(this).data("id")}; 
 
-  var id = $(this).data("id");
-  var information = {
-    id: id,
-  };
-
-  $.ajax("/api/unsave", {
+  $.ajax("/api/unsaved", {
     type: "PUT",
     data: information
   }).then(
@@ -35,38 +27,26 @@ $(".unsave-article").on("click", function (event) {
 });
 
 $(".comment-article").on("click", function (event) {
-  var id = $(this).data("id");
-  console.log("id", id);
-
-  var information = {
-    id: id
-  }; 
-
   event.preventDefault();
+  var information = {id: $(this).data("id")}; 
 
-  $.ajax("/api/comments", {
+  $.ajax("/article/comments", {
     type: "GET",
     data: information
   }).then(
     function () {
-      console.log("add comment");
-      
+      console.log("got article to comment");
     })
   });
 
 $("#comments").on("submit", function (event) {
   event.preventDefault();
 
-  var id = $(this).data("id");
-  console.log(id);
-  var comment = $("#comment").val().trim();
-
-  var newComment = {
-    id: id,
-    comment: comment
+  var newNote = {
+    id: $(this).data("id"),
+    body: $("#body").val().trim(),
+    name: $("#name").val().trim()
   };
-
-  console.log(newComment);
 
   $("#comment").val('');   
   $(".close-item").html("");
@@ -76,12 +56,13 @@ $("#comments").on("submit", function (event) {
 
   $.ajax("/api/unsave/comments", {
     type: "PUT",
-    data: newComment
+    data: newNote
   }).then(
     function (article) {  
-     
-      console.log("first", article);
-      window.location.href = "/";
+      console.log("added comment");
+
+      // console.log("first", article);
+      // window.location.href = "/";
     }
   );
 });

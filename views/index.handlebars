@@ -1,9 +1,9 @@
 <nav class="navbar navbar-default navbar-static-top">
   <div class="container">
-      <a class="navbar-brand" href="/"> Mongo Scraper </a>
-      <a class="navbar-text" href="/"> Home </a>
-      <a class="navbar-text" id="saved-articles" href="/saved"> Saved Articles </a>
-      <a href="/scrape"><button type="button" class="btn btn-default navbar-btn" id="scrape-articles">Scrape New Articles!</button></a>
+        <a class="navbar-brand" href="/"> Mongo Scraper </a>      
+        <a class="navbar-text active" href="/"> HOME </a>
+        <a class="navbar-text" id="saved-articles" href="/saved"> Saved Articles </a>
+        <a href="/scrape"><button type="button" class="btn btn-default navbar-btn" id="scrape-articles">Scrape New Articles!</button></a>
   </div>
 </nav>
 
@@ -68,8 +68,9 @@
           {{else}}
             <p>There are no comments for this article yet.</p>
           {{/if}}
-
-          <textarea placeholder="New Comment" class="text-area" id="comment" rows="3"></textarea>
+          <textarea placeholder="Your Name" class="text-area" required="" id="name" rows="1"></textarea>
+            <hr>
+          <textarea placeholder="New Comment" class="text-area" id="body" rows="2"></textarea>
             <hr>
           <button class="btn btn-primary submit-button" type="submit">Submit</button>
       </form>

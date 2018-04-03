@@ -10,6 +10,11 @@ body {
   transform: translate(-50%, -50%);
 }
 
+.navbar-default .active {
+  border-bottom: #004b34 solid 1px;
+  color: #004b34;
+}
+
 .modal-content {
   padding: 20px;
   align-content: center;
@@ -43,6 +48,11 @@ textarea {
   resize: none;
 }
 
+input {
+  border: none;
+  padding: 0;
+}
+
 form {
   width: 95%;
   margin: 0 auto;
@@ -61,7 +71,7 @@ hr {
   background-size: cover;
 }
 
-.save-article {
+.save-article, .unsave-article {
   display: block;
   float: right;
 }
