@@ -18,6 +18,7 @@ app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
+
 mongoose.connect("mongodb://localhost/articleScraper");
 
 app.get("/", function(req, res) {

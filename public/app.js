@@ -30,7 +30,6 @@ $(".modal-button").on("click", function (event) {
   event.preventDefault();
 
   $("#comment-modal").css("display", "block");
-  $("#existingComments").html('');
 
   var id = $(this).data("id");
   $.ajax("/article/" + id, {
@@ -40,16 +39,14 @@ $(".modal-button").on("click", function (event) {
     $("#comment-modal").attr("data-id", data._id);
     $(".article-title").html(`${data.title}`);
 
-    if (data.note) {
+    if (data.note.length > 0) {
+      $("#existingComments").html("");
       $.each(data.note, function(i, item) {
-        $("#existingComments").append(
-          `<div> ${item.name}</div> 
-          <div class="comment"> ${item.body} </div> <hr>`);  
-        })
-    } else {
-      $("#existingComments").html(
-        "<p>There are no comments for this article yet.</p>");
-    }
+      $("#existingComments").append(
+        `<div>${item.name}</div> 
+        <div class="comment">${item.body}</div><hr>`);  
+      })
+    } 
   });
 });
 
