@@ -2,28 +2,9 @@ body {
   font-family: 'Cormorant Semi-Bold', serif;
 }
 
-#comments {
-  z-index: 1010;
-  position: fixed;
-  height: 100%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  overflow: scroll;
-}
-
 .navbar-default .active {
   border-bottom: #004b34 solid 1px;
   color: #004b34;
-}
-
-.modal-content {
-  padding: 20px;
-  align-content: center;
-}
-
-.close-item {
-  float: right;
 }
 
 h3 {
@@ -33,7 +14,7 @@ h3 {
 label {
   width: 100%;
   margin: auto;
-  text-align: center;
+  /* text-align: center; */
 }
 
 .submit-button {
@@ -48,6 +29,7 @@ label {
 textarea {
   outline: none;
   resize: none;
+  font-family: 'Open Sans', sans-serif;
 }
 
 input {
@@ -65,6 +47,11 @@ hr {
   border-top: 1px solid #bebcbce7;
 }
 
+.hr-form {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 .jumbotron {
   text-align: center;
   background: url(https://images.unsplash.com/photo-1507581332893-aefc5acf08e0?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=f34e6be9fdf2a490dc4e152ae5feb701&auto=format&fit=crop&w=634&q=80);
@@ -78,7 +65,7 @@ hr {
   float: right;
 }
 
-.comment-article {
+.modal-button {
   margin-left: 10px;
 }
 
@@ -89,4 +76,80 @@ a {
 a:hover {
   color: #00755b;
   text-decoration: none;
+}
+
+.title {
+  color: #00755b;
+  font-size: 19px;
+  font-weight: normal;
+}
+
+.modal {
+  display: none; 
+  position: fixed; 
+  z-index: 1;
+  padding-top: 100px; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4); 
+}
+
+.modal-content {
+  text-align: left;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+  max-height: 80%;
+  overflow: scroll;
+}
+
+.close {
+  position: absolute;
+  z-index: 100;
+  color: #aaaaaa;
+  right: 15px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#existingComments {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.comment {
+  padding-left: 20px;
+  margin-top: 5px;
+}
+
+.title {
+  margin-top: 30px;
+}
+
+.title-comments {
+  margin-top: 50px;
+}
+
+.submit-button {
+  float: right;
+}
+
+textarea::placeholder {
+  color: #999999;
+}
+
+.article-title {
+  text-align: center;
 }

@@ -116,21 +116,6 @@ app.get("/article/:id", function(req, res) {
     });
 });
 
-
-// +app.get("/api/comments", function(req, res) {
-//   +  var id = req.body.id;
-//   +
-//   +  Scraper.findById(id, function(err, articles){
-//   +    if(err){
-//   +      console.log(err);
-//   +    } else {
-//   +      console.log(articles);
-//   +      res.render("index", articles);
-//   +    }
-//   +  })
-//   +});
-
-
 app.post("/article/add/:id", function(req, res) {
   db.Note.create(req.body)
   .then(function(dbNote) {
@@ -144,7 +129,6 @@ app.post("/article/add/:id", function(req, res) {
     res.json(err);
   });
 });
-
 
 app.listen(3000, function() {
   console.log("App running on port 3000!");

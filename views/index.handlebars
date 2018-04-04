@@ -13,74 +13,42 @@
 </div>
 
 <div id="articles">
-  <div class="row">
   {{#each articles}}
-      <div class="col-md-12 data-entry">
-        <div class="thumbnail">
-          <div class="row">
-            <div class="col-md-10 data-entry">
-              <div class="caption">
-                <a href='{{this.link}}'> <h3>{{this.title}}</h3> </a>
-                <p> {{this.summary}}</p>
-              </div>
-              <p data-id="{{this._id}}" id="myBtn" class="comment-article"> Comments 
-                <i class="fas fa-comments"></i>
-              </p>
-            </div>
-            <div class="col-md-2">
-              {{#if saved}}
-                <p data-id="{{this._id}}" class="unsave-article"> Delete   
-                  <i class="fas fa-plus"></i> 
-                </p>
-              {{else}}
-                <p data-id="{{this._id}}" class="save-article"> Save   
-                  <i class="fas fa-plus"></i> 
-                </p>
-              {{/if}}
-            </div>
-          </div>
-        </div>
+    <div class="thumbnail">
+      <div class="caption">
+        {{#if saved}}
+            <p data-id="{{this._id}}" class="unsave-article"> Delete   
+              <i class="fas fa-plus"></i> 
+            </p>
+        {{else}}
+          <p data-id="{{this._id}}" class="save-article"> Save   
+            <i class="fas fa-plus"></i> 
+          </p>
+        {{/if}}
+        <a href='{{this.link}}'> <h3>{{this.title}}</h3> </a> 
+        <p> {{this.summary}}</p>
       </div>
+      <p data-id="{{this._id}}" class="modal-button"> Comments 
+        <i class="fas fa-comments"></i>
+      </p>
+    </div>
   {{/each}}
+</div>
+
+<div id="comment-modal" class="modal">
+  <div id="comments" class="modal-content">   
+    <span class="close">&times;</span>
+    <form class="form-comment">
+          <h3 class="article-title"> </h3>
+          <p class="title">Post a Comment: </p>
+          <textarea placeholder="Your Name" class="text-area" required="" id="name" rows="1"></textarea>
+          <hr class="hr-form">
+          <textarea placeholder="New Comment" class="text-area" id="body" rows="2"></textarea>
+          <hr class="hr-form">
+          <button class="btn btn-primary submit-button" type="submit">Submit</button>
+          <p class="title title-comments"> Comments </p>
+          <div id="existingComments">
+          </div>
+    </form>
   </div>
 </div>
-  
-
-  <div id="modal" style="display:none">
-  <div id="comments" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">      
-        <div class="close-item"> <i class='fas fa-times'></i> </div>
-
-        <form class="form-comment">
-            <label for="item_name">
-              <h3>Comments for Article: <span class="article-title"> </span></h3>
-              <hr>
-              <h3> Existing Comments </h3>
-              <div id="existingComments">
-              </div>
-            </label>
-            <textarea placeholder="Your Name" class="text-area" required="" id="name" rows="1"></textarea>
-              <hr>
-            <textarea placeholder="New Comment" class="text-area" id="body" rows="2"></textarea>
-              <hr>
-            <button class="btn btn-primary submit-button" type="submit">Submit</button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
