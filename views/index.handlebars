@@ -16,14 +16,14 @@
   {{#each articles}}
     <div class="thumbnail">
       <div class="caption">
-        <p data-id="{{this._id}}" class="save-article"> Save   
+        <a><p data-id="{{this._id}}" class="save-article"> Save   
           <i class="fas fa-plus"></i> 
-        </p>
+        </p></a>
         <a href='{{this.link}}'> <h3>{{this.title}}</h3> </a> 
         <p> {{this.summary}}</p>
       </div>
-      <p data-id="{{this._id}}" class="modal-button"> Comments 
-        <i class="fas fa-comments"></i>
+      <a><p data-id="{{this._id}}" class="modal-button"> Comments 
+        <i class="fas fa-comments"></i></a>
       </p>
     </div>
   {{/each}}
