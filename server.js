@@ -11,6 +11,8 @@ const scrape = require("./routes/scrape");
 const Article = require("./models/Article");
 const Note = require("./models/Note");
 
+const keys = require("./configs/keys");
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -19,7 +21,7 @@ app.set('view engine', 'handlebars');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost/articleScraper");
+mongoose.connect(keys.mongoURI);
 
 app.get("/", function(req, res) {
   Article.find({saved: false})
