@@ -8,7 +8,8 @@ router.get("/:id", function(req, res) {
   Article.findOne({_id: req.params.id})
     .populate("note")
     .then(function(article) {
-      console.log(article.title);
+      console.log("article", article.note)
+      console.log("article REVERSE", article.note.reverse());
       res.json(article);
     })
     .catch(function(err) {

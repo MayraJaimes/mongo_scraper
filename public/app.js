@@ -33,7 +33,6 @@ $(".modal-button").on("click", function (event) {
   $("#existingComments").html('');
 
   var id = $(this).data("id");
-  console.log("id on client side", id);
   $.ajax("/article/" + id, {
     type: "GET",
   }).then(function(data) {
@@ -59,7 +58,6 @@ $(".close").on("click", function (event) {
 })
 
 var modal = document.getElementById('comment-modal');
-
 window.onclick = function(event) {
   if (event.target == modal) {
     $("#comment-modal").css("display", "none");
@@ -69,7 +67,6 @@ window.onclick = function(event) {
 $("#comment-modal").on("submit", function (event) {
   event.preventDefault();
   var id = $(this).data("id");
-
   var newNote = {
     body: $("#body").val().trim(),
     name: $("#name").val().trim()
@@ -80,7 +77,9 @@ $("#comment-modal").on("submit", function (event) {
     data: newNote
   })
   .then(function (article) {  
-      console.log("added comment");
-      $("#existingComments").html('');
+      $("#comment-modal").css("display", "none");
+      $("#body").val("");
+      $("#name").val("");
+      $("#existingComments").html("");
     });
 });
