@@ -1,9 +1,9 @@
 <nav class="navbar navbar-default navbar-static-top">
   <div class="container">
-      <a class="navbar-brand" href="/"> Mongo Scraper </a>
-      <a class="navbar-text" href="/"> Home </a>
-      <a class="navbar-text active" id="saved-articles" href="/saved"> SAVED </a>
-      <a href="/scrape"><button type="button" class="btn btn-default navbar-btn" id="scrape-articles">Scrape New Articles!</button></a>
+        <a class="navbar-brand" href="/"> Mongo Scraper </a>      
+        <a class="navbar-text" href="/"> Home </a>
+        <a class="navbar-text active" id="saved-articles" href="/saved"> SAVED </a>
+        <a href="/scrape"><button type="button" class="btn btn-default navbar-btn" id="scrape-articles">Scrape New Articles!</button></a>
   </div>
 </nav>
 
@@ -13,60 +13,36 @@
 </div>
 
 <div id="articles">
-  <div class="row">
   {{#each articles}}
-      <div class="col-md-12 data-entry">
-        <div class="thumbnail">
-          <div class="row">
-            <div class="col-md-10 data-entry">
-              <div class="caption">
-                <a href='{{this.link}}'> <h3>{{this.title}}</h3> </a>
-                <p> {{this.summary}}</p>
-              </div>
-              <p data-id="{{this._id}}" class="comment-article"> Comments 
-                <i class="fas fa-comments"></i>
-              </p>
-            </div>
-            <div class="col-md-2">
-                <p data-id="{{this._id}}" class="unsave-article"> Delete   
-                  <i class="fas fa-plus"></i> 
-                </p>
-            </div>
-          </div>
-        </div>
+    <div class="thumbnail">
+      <div class="caption">
+        <p data-id="{{this._id}}" class="unsave-article"> Delete   
+          <i class="fas fa-plus"></i> 
+        </p>
+        <a href='{{this.link}}'> <h3>{{this.title}}</h3> </a> 
+        <p> {{this.summary}}</p>
       </div>
-  {{/each}}
-  </div>
-</div>
-  
-{{#each articles}}
- <div id="comments" role="dialog" data-id="{{this._id}}" style="display:none" class="none">
-  <div class="modal-dialog">
-    <div class="modal-content">      
-      <div class="close-item"> </div>
-      <form class="form-comment" data-id="{{this._id}}" name="add-comment">
-          <label for="item_name">
-            <h3>Comments for Article: {{this.title}} </h3>
-            <hr>
-            <h3>Existing Comments </h3>
-          </label>
-          {{#if note}}
-            <li class="article-comments-list">
-                {{this.body}}
-                <a href="/events/{{this.id}}">
-                    <p class="delete-comment">  <i class='fas fa-minus'></i> </p>
-                </a>
-            </li>
-          {{else}}
-            <p>There are no comments for this article yet.</p>
-          {{/if}}
-          <textarea placeholder="Your Name" class="text-area" required="" id="name" rows="1"></textarea>
-           <hr>
-          <textarea placeholder="New Comment" class="text-area" required="" id="body" rows="2"></textarea>
-            <hr>
-          <button class="btn btn-primary submit-button" type="submit">Submit</button>
-      </form>
+      <p data-id="{{this._id}}" class="modal-button"> Comments 
+        <i class="fas fa-comments"></i>
+      </p>
     </div>
+  {{/each}}
+</div>
+
+<div id="comment-modal" class="modal">
+  <div id="comments" class="modal-content">   
+    <span class="close">&times;</span>
+    <form class="form-comment">
+          <h3 class="article-title"> </h3>
+          <p class="title">Post a Comment: </p>
+          <textarea placeholder="Your Name" class="text-area" required="" id="name" rows="1"></textarea>
+          <hr class="hr-form">
+          <textarea placeholder="New Comment" class="text-area" id="body" rows="2"></textarea>
+          <hr class="hr-form">
+          <button class="btn btn-primary submit-button" type="submit">Submit</button>
+          <p class="title title-comments">Comments</p>
+          <div id="existingComments">
+          </div>
+    </form>
   </div>
 </div>
-{{/each}}

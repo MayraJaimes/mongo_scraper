@@ -2,7 +2,7 @@
   <div class="container">
         <a class="navbar-brand" href="/"> Mongo Scraper </a>      
         <a class="navbar-text active" href="/"> HOME </a>
-        <a class="navbar-text" id="saved-articles" href="/saved"> Saved Articles </a>
+        <a class="navbar-text" id="saved-articles" href="/saved"> Saved </a>
         <a href="/scrape"><button type="button" class="btn btn-default navbar-btn" id="scrape-articles">Scrape New Articles!</button></a>
   </div>
 </nav>
@@ -16,15 +16,9 @@
   {{#each articles}}
     <div class="thumbnail">
       <div class="caption">
-        {{#if saved}}
-            <p data-id="{{this._id}}" class="unsave-article"> Delete   
-              <i class="fas fa-plus"></i> 
-            </p>
-        {{else}}
-          <p data-id="{{this._id}}" class="save-article"> Save   
-            <i class="fas fa-plus"></i> 
-          </p>
-        {{/if}}
+        <p data-id="{{this._id}}" class="save-article"> Save   
+          <i class="fas fa-plus"></i> 
+        </p>
         <a href='{{this.link}}'> <h3>{{this.title}}</h3> </a> 
         <p> {{this.summary}}</p>
       </div>
