@@ -28,76 +28,43 @@ $(".unsave-article").on("click", function (event) {
 
 $(".comment-article").on("click", function (event) {
   event.preventDefault();
+  $("#existingComments").html('');
   var id = $(this).data("id");
   console.log("id on client side", id);
   $.ajax("/article/" + id, {
     type: "GET",
   }).then(function(data) {
-    console.log("data being returned to client", data);
 
-    $("#modal").attr(`data-id`, `${data._id}`);
+    $("#modal").attr("data-id", data._id);
+    $(".article-title").html(`${data.title}`);
+    $("#modal").css("display", "block");
 
-    $("#modal").html(
-    `<div id="comments" role="dialog" data-id="${data._id}">
-    <div class="modal-dialog">
-      <div class="modal-content">      
-        <div class="close-item"> <i class='fas fa-times'></i> </div>
-        <form class="form-comment" data-id="${data._id}" name="add-comment">
-            <label for="item_name">
-              <h3>Comments for Article: ${data.title} </h3>
-              <hr>
-  
-              <h3> Existing Comments </h3>
-              <div id="existingComments">
-              </div>
-            </label>
-  
-            <textarea placeholder="Your Name" class="text-area" required="" id="name" rows="1"></textarea>
-              <hr>
-            <textarea placeholder="New Comment" class="text-area" id="body" rows="2"></textarea>
-              <hr>
-            <button class="btn btn-primary submit-button" type="submit">Submit</button>
-        </form>
-      </div>
-    </div>
-  </div> `
-);
-
-$("#modal").css("display", "block");
-
-  if (data.note) {
-     console.log("data-noteeeeeee", data.note);
-    $.each(data.note, function(i, item) {
-      console.log("itemmmmmm", item.body);
-      $("#existingComments").append(`<div>${item.name}</div> 
-       <div> ${item.body} </div>
-       <p class="delete-comment">  <i class='fas fa-times'></i> </p>` );  
-      })
-}
-else {
-  $("#existingComments").append("<p>There are no comments for this article yet.</p>");
-}
-
-
-  $('.close-item').on('click', function () {
-    $("#modal").css("display", "none");
-    $("#modal").html("");
+    if (data.note) {
+      console.log("data-noteeeeeee", data.note);
+      $.each(data.note, function(i, item) {
+        console.log("itemmmmmm", item.body);
+        $("#existingComments").append(
+        `<div>${item.name}</div> 
+        <div> ${item.body} </div>
+        <p class="delete-comment">  
+        <i class='fas fa-times'></i> </p>`);  
+        })
+    } else {
+      $("#existingComments").html(
+      "<p>There are no comments for this article yet.</p>");
+    }
   });
 });
-  });
 
 
 $("#modal").on("submit", function (event) {
   event.preventDefault();
-
   var id = $(this).data("id");
 
   var newNote = {
     body: $("#body").val().trim(),
     name: $("#name").val().trim()
   };
-
-  console.log("new note being sent to back", newNote);
 
   $.ajax("/article/add/" + id, {
     type: "POST",
@@ -106,11 +73,15 @@ $("#modal").on("submit", function (event) {
   .then(function (article) {  
       console.log("added comment");
       $("#modal").css("display", "none");
-      $("#modal").html("");
-      window.location.href = "/";
+      $("#existingComments").html('');
     });
 });
 
+
+$('.close-item').on('click', function () {
+  $("#modal").css("display", "none");
+  $("#existingComments").html('');
+});
 
 
 // $('.comment-article').on('click', function () {

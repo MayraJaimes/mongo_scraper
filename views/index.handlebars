@@ -23,7 +23,7 @@
                 <a href='{{this.link}}'> <h3>{{this.title}}</h3> </a>
                 <p> {{this.summary}}</p>
               </div>
-              <p data-id="{{this._id}}" class="comment-article"> Comments 
+              <p data-id="{{this._id}}" id="myBtn" class="comment-article"> Comments 
                 <i class="fas fa-comments"></i>
               </p>
             </div>
@@ -47,6 +47,28 @@
   
 
   <div id="modal" style="display:none">
+  <div id="comments" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">      
+        <div class="close-item"> <i class='fas fa-times'></i> </div>
+
+        <form class="form-comment">
+            <label for="item_name">
+              <h3>Comments for Article: <span class="article-title"> </span></h3>
+              <hr>
+              <h3> Existing Comments </h3>
+              <div id="existingComments">
+              </div>
+            </label>
+            <textarea placeholder="Your Name" class="text-area" required="" id="name" rows="1"></textarea>
+              <hr>
+            <textarea placeholder="New Comment" class="text-area" id="body" rows="2"></textarea>
+              <hr>
+            <button class="btn btn-primary submit-button" type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   </div>
 

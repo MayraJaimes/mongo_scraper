@@ -135,7 +135,7 @@ app.post("/article/add/:id", function(req, res) {
   db.Note.create(req.body)
   .then(function(dbNote) {
     console.log("note", dbNote);
-    return db.Article.findOneAndUpdate({ _id: req.params.id }, {note: dbNote._id}, { new: true });
+    return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: {note: dbNote._id} }, { new: true });
   })
   .then(function(dbArticle) {
     res.json(dbArticle);
