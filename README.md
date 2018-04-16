@@ -1,6 +1,6 @@
 # mongo_scraper
 
-The Mongo Scraper web app lets users view and leave comments on the latest health news. With the help of the Cheerio npm and mongoose this app scrapes news from the Science Journal Daily website.
+The Mongo Scraper web app lets users view, save, and leave comments on the latest health news. With the help of the Cheerio npm and mongoose this app scrapes news from the Science Journal Daily website.
 
 Whenever a user visits the site, the app scrapes stories from the news outlet "Science Journal Daily" and displays them to the user. Each scraped article is saved to the application database. The app scrapes and displays the following information for each article:
 
